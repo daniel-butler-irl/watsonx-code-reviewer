@@ -18,6 +18,10 @@ class GitHubAPI:
         self.private_key = os.getenv('GITHUB_PRIVATE_KEY',private_key)
         self.api_url = os.getenv('GITHUB_API_URL', api_url)
 
+        # Replace \n with actual newlines for the private key
+        if self.private_key:
+            self.private_key = self.private_key.replace("\\n", "\n")
+
         # Raise exceptions if required configurations are not set
         if not self.app_id:
             raise ValueError("GITHUB_APP_ID environment variable is not set")

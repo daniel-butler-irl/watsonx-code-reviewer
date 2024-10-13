@@ -1,6 +1,6 @@
 app_name: watsonx-code-reviewer
-log_level: INFO
-port: 8080
+log_level: DEBUG
+port: 6666
 github:
   app_id: "YOUR_GITHUB_APP_ID"
   installation_id: "YOUR_GITHUB_INSTALLATION_ID"
