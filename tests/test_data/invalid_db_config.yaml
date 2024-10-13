@@ -1,0 +1,13 @@
+postgres:
+  host: ""                  # Hostname is missing
+  port: not_a_port          # Invalid port value
+  user: ""                  # Empty username
+  password: ""              # Empty password
+  database: ""              # Empty database name
+
+elasticsearch:
+  host: ""                  # Hostname is missing
+  port: not_a_port          # Invalid port value
+  user: ""                  # Empty username
+  password: ""              # Empty password
+  index: ""                 # Empty index

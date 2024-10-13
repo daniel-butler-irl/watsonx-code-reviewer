@@ -1,0 +1,5 @@
+models:
+  - name: watsonx-llama-8b
+    alias: default
+  - name: watsonx-codellama-34b
+    alias: codellama

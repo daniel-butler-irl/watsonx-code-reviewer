@@ -1,0 +1,13 @@
+postgres:
+  host: localhost
+  port: 5432
+  user: test_user
+  password: test_password
+  database: test_database
+
+elasticsearch:
+  host: localhost
+  port: 9200
+  user: test_user
+  password: test_password
+  index: test_index

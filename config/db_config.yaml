@@ -1,0 +1,27 @@
+# db_config.yaml - Database configuration file
+
+# PostgreSQL configuration
+postgres:
+  host: localhost           # Hostname of the PostgreSQL server
+  port: 5432                # Port on which PostgreSQL is running
+  user: your_user           # Username to connect to PostgreSQL
+  password: your_password   # Password to connect to PostgreSQL
+  database: your_database   # Name of the PostgreSQL database
+
+  # Notes:
+  # PostgreSQL is used to store structured data, such as repository metadata,
+  # function signatures, and pull request details. It provides reliable, transactional
+  # storage for core application data.
+
+# Elasticsearch configuration
+elasticsearch:
+  host: localhost           # Hostname of the Elasticsearch server
+  port: 9200                # Port on which Elasticsearch is running
+  user: your_user           # Username for Elasticsearch (if secured)
+  password: your_password   # Password for Elasticsearch (if secured)
+  index: watsonx_index      # Index to use for storing and retrieving documents
+
+  # Notes:
+  # Elasticsearch is used for semantic similarity search and full-text search capabilities.
+  # It serves both as a vector database for semantic embeddings and a full-text search engine,
+  # allowing efficient querying and retrieval of relevant code snippets and historical data.

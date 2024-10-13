@@ -1,0 +1,6 @@
+elasticsearch:
+  host: localhost
+  port: 9200
+  user: test_user
+  password: test_password
+  index: test_index

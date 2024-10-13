@@ -1,0 +1,3 @@
+app_name: watsonx-code-reviewer
+log_level: INFO
+port: 8080
