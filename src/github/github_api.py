@@ -2,14 +2,21 @@ import os
 import jwt
 import time
 import requests
+import logging
 from github import Github
+from github import GithubException
+
+
+logger = logging.getLogger(__name__)
+
 
 class GitHubAPI:
-    def __init__(self):
-        self.api_url = os.getenv('GITHUB_API_URL', 'https://api.github.com')
-        self.app_id = os.getenv('GITHUB_APP_ID')
-        self.installation_id = os.getenv('GITHUB_INSTALLATION_ID')
-        self.private_key = os.getenv('GITHUB_PRIVATE_KEY')
+    def __init__(self, app_id=None, installation_id=None, private_key=None, api_url="https://api.github.com"):
+        # Set parameters from arguments or environment variables
+        self.app_id = os.getenv('GITHUB_APP_ID', app_id)
+        self.installation_id = os.getenv('GITHUB_INSTALLATION_ID', installation_id)
+        self.private_key = os.getenv('GITHUB_PRIVATE_KEY',private_key)
+        self.api_url = os.getenv('GITHUB_API_URL', api_url)
 
         # Raise exceptions if required configurations are not set
         if not self.app_id:
@@ -45,8 +52,34 @@ class GitHubAPI:
         return token
 
 
-    def post_review_comment(self, repo_full_name, pull_number, comments):
-        repo = self.github.get_repo(repo_full_name)
-        pull_request = repo.get_pull(pull_number)
-        pull_request.create_review(body=comments, event="COMMENT")
 
+    def post_review_comment(self, repo_name, pr_number, comment) -> dict:
+        try:
+            logger.info(f"Attempting to post a review comment on PR #{pr_number} in repository '{repo_name}'.")
+
+            # Get repository and pull request information
+            repo = self.github.get_repo(repo_name)
+            pull_request = repo.get_pull(pr_number)
+
+            # Make the request to create a review
+            review = pull_request.create_review(body=comment, event='COMMENT')
+
+            # Check if the review was created successfully
+            if review.id is not None:
+                logger.info(f"Successfully posted review comment on PR #{pr_number} in repository '{repo_name}'.")
+                return {'status': 'success', 'message': 'Review comment posted successfully'}
+            else:
+                logger.warning(f"Unknown failure occurred while posting a review comment on PR #{pr_number} in repository '{repo_name}'.")
+                return {'status': 'failure', 'message': 'Unknown failure: Review ID is None'}
+
+        except GithubException as e:
+            logger.error(f"GitHubException occurred while posting a review: {str(e)}")
+            if e.status == 403:
+                return {'status': 'failure', 'message': 'Forbidden: You may not have permissions to post a comment.'}
+            elif e.status == 422:
+                return {'status': 'failure', 'message': 'Validation failed: There may be a problem with the request payload.'}
+            else:
+                return {'status': 'failure', 'message': f'GitHub exception occurred: {str(e)}'}
+        except Exception as e:
+            logger.error(f"Exception occurred: {str(e)}")
+            return {'status': 'failure', 'message': f'Exception occurred: {str(e)}'}

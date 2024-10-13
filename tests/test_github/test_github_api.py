@@ -4,6 +4,9 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
 from unittest.mock import patch, MagicMock
+
+from github import GithubException
+
 from src.github.github_api import GitHubAPI
 
 def generate_test_private_key():
@@ -46,20 +49,36 @@ def test_get_installation_token(github_api):
     token = github_api.get_installation_token()
     assert token == 'mock_installation_token'
 
-@patch('src.github.github_api.GitHubAPI.get_installation_token')
-def test_post_review_comment(mock_get_token, github_api):
-    # Mock the installation token retrieval
-    mock_get_token.return_value = 'mock_installation_token'
+def test_post_review_comment(github_api):
+    # Access the mock Github object from the fixture
+    mock_github = github_api.github
 
-    # Mock the GitHub API
+    # Mock the repository
     mock_repo = MagicMock()
+    mock_github.get_repo.return_value = mock_repo
+
+    # Mock the pull request
     mock_pull_request = MagicMock()
-    github_api.github.get_repo.return_value = mock_repo
     mock_repo.get_pull.return_value = mock_pull_request
 
-    # Call the method to post a review comment
-    github_api.post_review_comment("test/repo", 1, "This is a test review comment.")
+    # Mock the review object with a valid ID
+    mock_review = MagicMock()
+    mock_review.id = 12345
+    mock_pull_request.create_review.return_value = mock_review
 
-    # Verify the expected calls
-    mock_repo.get_pull.assert_called_once_with(1)
-    mock_pull_request.create_review.assert_called_once_with(body="This is a test review comment.", event="COMMENT")
+    # Test successful review comment posting
+    response = github_api.post_review_comment("test/repo", 1, "This is a test review comment.")
+    assert response['status'] == 'success'
+    assert response['message'] == 'Review comment posted successfully'
+
+    # Simulate a 403 Forbidden error
+    mock_pull_request.create_review.side_effect = GithubException(403, {'message': 'Forbidden'}, None)
+    response = github_api.post_review_comment("test/repo", 1, "This is a test review comment.")
+    assert response['status'] == 'failure'
+    assert 'Forbidden' in response['message']
+
+    # Simulate a 422 Validation Failed error
+    mock_pull_request.create_review.side_effect = GithubException(422, {'message': 'Validation Failed'}, None)
+    response = github_api.post_review_comment("test/repo", 1, "This is a test review comment.")
+    assert response['status'] == 'failure'
+    assert 'Validation failed' in response['message']
