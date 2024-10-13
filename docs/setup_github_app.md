@@ -1,72 +1,57 @@
-# Setting Up a GitHub App for watsonx-code-reviewer
+# Setting Up the GitHub App for WatsonX Code Reviewer
 
-This guide will walk you through creating a GitHub App that will be used by **watsonx-code-reviewer** to receive webhook events and interact with GitHub APIs.
+This guide will walk you through the steps to create and configure a GitHub App that integrates with the WatsonX Code Reviewer to automatically review pull requests and provide feedback.
 
-## Step 1: Create a New GitHub App
-1. **Navigate to GitHub Settings**:
-    - Go to [GitHub Settings](https://github.com/settings/apps) and click on **Developer settings**.
-    - Under **GitHub Apps**, click **New GitHub App**.
+## Prerequisites
 
-2. **Basic Information**:
-    - **GitHub App name**: Choose a descriptive name, e.g., "watsonx-code-reviewer".
-    - **Homepage URL**: Use your repository URL or documentation page URL.
-    - **Webhook URL**: For local development, use [Smee.io](https://smee.io) to generate a proxy URL (e.g., `https://smee.io/YOUR_CUSTOM_PATH`), which will forward webhooks to your local server.
-    - **Webhook secret**: Generate a secret and keep it safe. This will be used to verify webhook payloads.
+- You need **admin** access to the GitHub account or organization where you want to install the app.
+- A working **GitHub account**.
 
-3. **Permissions**:
-    - Under **Repository permissions**, set:
-        - **Contents**: Read-only.
-        - **Pull requests**: Read & write (required to comment on PRs).
-    - Under **Organization permissions** (if needed):
-        - **Members**: Read-only (optional, for broader analysis).
+## Step-by-Step Guide
 
-4. **Subscribe to Events**:
-    - In the **Webhook** section, subscribe to:
-        - **Pull request** events: To trigger the code review workflow when PRs are opened, updated, or closed.
-        - **Issue comment** events: To respond to comments.
+### Step 1: Create a GitHub App
+1. Go to [GitHub Developer Settings](https://github.com/settings/apps).
+2. Click on **New GitHub App**.
+3. Fill in the details:
+   - **GitHub App name**: Choose a name like "WatsonX Code Reviewer".
+   - **Homepage URL**: Use your project’s URL or leave it blank if you don't have one.
+   - **Webhook URL**: Set this to the publicly accessible URL where the app can receive events (e.g., use **Smee.io** for local development).
+   - **Webhook secret**: Enter a secret key used to verify the payloads received from GitHub.
+4. **Permissions & events**:
+   - Under **Permissions**, provide read and write access to **Pull requests** and read access to **Labels**.
+   - Set the **Subscribe to events** option to include **Pull request** events.
+5. **Where can this GitHub App be installed?**
+   - Select **Any account**.
 
-5. **Where Can This GitHub App Be Installed?**
-    - Set the app to be available to **Any account** or **Only on this account** depending on your intended usage.
+### Step 2: Generate Private Key
+1. Scroll down to the **Private keys** section.
+2. Click **Generate a private key**.
+3. This will download a `.pem` file to your computer. Keep it safe as you'll need it to authenticate the app.
 
-6. **Create GitHub App**:
-    - Click **Create GitHub App** to finalize the setup.
+### Step 3: Install the GitHub App
+1. Once the app is created, click on **Install App**.
+2. Select the account or organization where you want to install it.
+3. Choose the repositories you want the app to access.
+4. To get the **GITHUB_INSTALLATION_ID**, go to the installed app's page, and you'll find it in the URL as a numeric value.
 
-## Step 2: Generate and Download Private Key
-- After creating the GitHub App, navigate to the app's page in the **Developer settings**.
-- Under **Private keys**, click **Generate a private key**.
-- Download the `.pem` file and store it securely. This private key is used to authenticate requests made by your GitHub App.
+### Step 4: Update Configuration
+- Add the following environment variables to your local environment or configuration files:
+   - **GITHUB_APP_ID**: The ID of your GitHub App (found on the app's settings page).
+   - **GITHUB_INSTALLATION_ID**: The installation ID (found after installing the GitHub App).
+   - **GITHUB_PRIVATE_KEY**: The content of the `.pem` file you downloaded.
+   - When setting the private key as an environment variable, you can use the following command to convert it to a single line:
+     ```bash
+     awk '{printf "%s\\n", $0}' private-key.pem
+     ```
 
-## Step 3: Install the GitHub App
-1. **Install on a Repository**:
-    - On the GitHub App page, click **Install App**.
-    - Choose the repository or organization where you want to install the app.
+### Step 5: Use Smee.io for Local Development
+- To test locally, use [Smee.io](https://smee.io) to forward GitHub webhooks to your local server.
+- Create a new Smee channel and set the **Webhook URL** of your GitHub App to the generated Smee URL.
+- Run the Smee client locally:
+  ```bash
+  npx smee-client --url <smee_url> --target http://localhost:8888/webhook
+  ```
 
-2. **Select Permissions**:
-    - When prompted, allow access to the desired repositories to ensure the app can properly monitor and comment on pull requests.
-
-## Step 4: Configure Environment Variables
-To allow **watsonx-code-reviewer** to authenticate with GitHub, you need to configure the following environment variables:
-- `GITHUB_APP_ID`: The ID of your GitHub App (available in the app settings).
-- `GITHUB_PRIVATE_KEY`: The content of the `.pem` private key file.
-- `GITHUB_WEBHOOK_SECRET`: The webhook secret you generated during app setup.
-
-You can add these environment variables to your local environment or use them in your cloud deployment (e.g., IBM Cloud Code Engine).
-
-## Step 5: Testing Webhooks Locally with Smee.io
-1. **Install Smee Client**:
-    - Run `npm install --global smee-client` to install the Smee client.
-2. **Run Smee**:
-    - Use the following command to forward events to your local machine:
-      ```bash
-      smee -u https://smee.io/YOUR_CUSTOM_PATH -t http://localhost:8080/webhook
-      ```
-    - Replace `YOUR_CUSTOM_PATH` with the path generated by Smee.io.
-3. **Start Local Server**:
-    - Run your local server (e.g., `main.py`) to handle webhook events at `http://localhost:8080/webhook`.
-
-## Additional Notes
-- **Security**: Ensure the private key and webhook secret are kept secure. For production deployments, use a secure secret manager like IBM Cloud Secrets Manager.
-- **Testing**: Use a test repository to validate the integration before deploying to production.
-
-By following these steps, you'll have a GitHub App properly set up to work with **watsonx-code-reviewer** for PR reviews and webhook-based interactions.
+## Next Steps
+- After setting up the GitHub App, make sure to start the **WatsonX Code Reviewer** to process incoming webhook events and perform pull request reviews.
 
