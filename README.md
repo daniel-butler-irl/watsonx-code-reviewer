@@ -1,6 +1,6 @@
-# watsonx-code-reviewer
+# watsonx-code-reviewerd
 
-watsonx-code-reviewer is an AI-powered application designed to review GitHub pull requests (PRs), post automated change requests, and respond to user comments about code. The app leverages multiple agents using IBM WatsonX LLMs to review code not only within the PR but also in the broader context of the entire codebase and dependencies. This app provides continuous learning, building a knowledge database for each repository to speed up future reviews.
+watsonx-code-reviewer is s an AI-powered application designed to review GitHub pull requests (PRs), post automated change requests, and respond to user comments about code. The app leverages multiple agents using IBM WatsonX LLMs to review code not only within the PR but also in the broader context of the entire codebase and dependencies. This app provides continuous learning, building a knowledge database for each repository to speed up future reviews.
 
 ### Key Features
 
