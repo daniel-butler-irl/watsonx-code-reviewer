@@ -3,7 +3,7 @@ import logging
 from src.github.webhook_handler import app as webhook_app, set_review_agent, set_review_label
 from src.utils.config_loader import ConfigLoader
 from src.github.github_api import GitHubAPI
-from src.agents.review_agent import ReviewAgent
+from src.agents.pr_review_agent import PRReviewAgent
 import threading
 
 # Configure logging
@@ -22,9 +22,9 @@ def initialize_github_api(config):
     logger.debug(f"Loaded configuration: {config}")  # Debug log for config content
 
     # Get GitHub configuration details from the config file
-    github_app_id = config.get('github', {}).get('app_id')
-    github_installation_id = config.get('github', {}).get('installation_id')
-    github_private_key = config.get('github', {}).get('private_key')
+    github_app_id = os.getenv('GITHUB_APP_ID', config.get('github', {}).get('app_id'))
+    github_installation_id = os.getenv('GITHUB_INSTALLATION_ID', config.get('github', {}).get('installation_id'))
+    github_private_key = os.getenv('GITHUB_PRIVATE_KEY', config.get('github', {}).get('private_key'))
 
     if not (github_app_id and github_installation_id and github_private_key):
         logger.error("Missing GitHub configuration details. Cannot initialize GitHubAPI.")
@@ -32,16 +32,15 @@ def initialize_github_api(config):
 
     return GitHubAPI(github_app_id, github_installation_id, github_private_key)
 
-
 def initialize_agents(github_api):
     logger.info("Initializing Agents")
-    # Initialize the ReviewAgent
-    review_agent = ReviewAgent(github_api)
-    return [review_agent]
+    # Initialize the PRReviewAgent
+    pr_review_agent = PRReviewAgent(github_api=github_api)
+    return [pr_review_agent]
 
 def run_webhook_server():
     logger.info("Starting Webhook Server")
-    webhook_app.run(host='0.0.0.0', port=8888)
+    webhook_app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8888)))
 
 if __name__ == "__main__":
     # Load configuration

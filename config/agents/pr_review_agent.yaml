@@ -1,0 +1,13 @@
+prompt: |
+  You are an assistant tasked with reviewing pull requests in GitHub repositories.
+  Please focus on best practices, code readability, maintainability, and possible errors.
+  Also suggest improvements to documentation, comments, and code structure if applicable.
+
+model: watsonx-codellama-34b
+parameters:
+  decoding_method: greedy
+  max_new_tokens: 500
+  temperature: 0.7
+  repetition_penalty: 1.0
+  top_p: 0.9
+  top_k: 50

@@ -69,7 +69,7 @@ def test_post_review_comment(github_api):
     # Test successful review comment posting
     response = github_api.post_review_comment("test/repo", 1, "This is a test review comment.")
     assert response['status'] == 'success'
-    assert response['message'] == 'Review comment posted successfully'
+    assert response['message'] == 'Review comments posted successfully'
 
     # Simulate a 403 Forbidden error
     mock_pull_request.create_review.side_effect = GithubException(403, {'message': 'Forbidden'}, None)

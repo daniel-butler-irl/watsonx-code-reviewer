@@ -1,0 +1,13 @@
+prompt: |
+  <|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n
+  You are an assistant reviewing Markdown files from GitHub repositories. These are written in GitHub Flavored Markdown (GFM) and are used for documentation, README files, and other purposes.
+  Please check for issues like spelling errors, grammatical mistakes, formatting inconsistencies, and adherence to Markdown best practices.
+  <|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n
+
+model: watsonx-llama-3-2-1b-instruct
+parameters:
+  decoding_method: greedy
+  max_new_tokens: 4096
+  temperature: 0.5
+  repetition_penalty: 1
+  stop_sequences: []

@@ -1,11 +1,11 @@
 import os
+
 import jwt
 import time
 import requests
 import logging
 from github import Github
 from github import GithubException
-
 
 logger = logging.getLogger(__name__)
 
@@ -55,35 +55,69 @@ class GitHubAPI:
         token = response.json().get("token")
         return token
 
+    def get_pull_request(self, repo_name, pr_number):
+        repo = self.github.get_repo(repo_name)
+        return repo.get_pull(pr_number)
 
+    def get_repository(self, repo_name):
+        """
+        Get a repository object by name.
 
-    def post_review_comment(self, repo_name, pr_number, comment) -> dict:
+        :param repo_name: Full name of the repository (e.g., 'owner/repo').
+        :return: Repository object.
+        """
+        return self.github.get_repo(repo_name)
+
+    def get_review_comments(self, repo_name: str, pr_number: int):
         try:
-            logger.info(f"Attempting to post a review comment on PR #{pr_number} in repository '{repo_name}'.")
+            repo = self.github.get_repo(repo_name)
+            pull_request = repo.get_pull(pr_number)
+            comments = pull_request.get_review_comments()
+            return [comment for comment in comments]
+        except GithubException as e:
+            logger.error(f"GitHubException occurred while fetching review comments: {str(e)}")
+            return []
+        except Exception as e:
+            logger.error(f"Exception occurred while fetching review comments: {str(e)}")
+            return []
 
+    def post_review_comment(self, repo_name, pr_number, comments) -> dict:
+        try:
+            logger.info(f"Attempting to post review comments on PR #{pr_number} in repository '{repo_name}'.")
             # Get repository and pull request information
             repo = self.github.get_repo(repo_name)
             pull_request = repo.get_pull(pr_number)
+            commit_id = pull_request.head.sha
+            commit = repo.get_commit(commit_id)
 
-            # Make the request to create a review
-            review = pull_request.create_review(body=comment, event='COMMENT')
+            logger.debug(f"Posting Comments: {comments}")
+            # Make the request to create a review with comments
+            review = pull_request.create_review(
+                commit=commit,
+                body="Automated code review comments.",
+                event='COMMENT',
+                comments=comments
+            )
 
-            # Check if the review was created successfully
             if review.id is not None:
-                logger.info(f"Successfully posted review comment on PR #{pr_number} in repository '{repo_name}'.")
-                return {'status': 'success', 'message': 'Review comment posted successfully'}
+                logger.info(f"Successfully posted review comments on PR #{pr_number} in repository '{repo_name}'.")
+                return {'status': 'success', 'message': 'Review comments posted successfully'}
             else:
-                logger.warning(f"Unknown failure occurred while posting a review comment on PR #{pr_number} in repository '{repo_name}'.")
+                logger.warning(f"Unknown failure occurred while posting review comments on PR #{pr_number} in repository '{repo_name}'.")
                 return {'status': 'failure', 'message': 'Unknown failure: Review ID is None'}
 
         except GithubException as e:
             logger.error(f"GitHubException occurred while posting a review: {str(e)}")
+            logger.error(f"Exception data: {e.data}")
             if e.status == 403:
                 return {'status': 'failure', 'message': 'Forbidden: You may not have permissions to post a comment.'}
             elif e.status == 422:
+                logger.error(f"Validation error data: {e.data}")
                 return {'status': 'failure', 'message': 'Validation failed: There may be a problem with the request payload.'}
             else:
                 return {'status': 'failure', 'message': f'GitHub exception occurred: {str(e)}'}
         except Exception as e:
             logger.error(f"Exception occurred: {str(e)}")
+            logger.error(f"Exception type: {type(e)}")
+            logger.error("Stack trace:", exc_info=True)
             return {'status': 'failure', 'message': f'Exception occurred: {str(e)}'}

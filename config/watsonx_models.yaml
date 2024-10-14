@@ -1,5 +1,24 @@
+watsonx:
+  api_url: "https://us-south.ml.cloud.ibm.com/ml/v1/text/generation?version=2023-05-29"
+  access_token: "YOUR_ACCESS_TOKEN"
+  project_id: "a5237204-99db-4d7c-a834-ee3e52af7460"
+
 models:
   - name: watsonx-llama-8b
-    alias: default
+    model_id: "meta-llama/llama-8b"
+    description: "WatsonX Llama 8B model for general purpose tasks."
+  - name: watsonx-llama-3-70b-instruct
+    model_id: "meta-llama/llama-3-70b-instruct"
+    description: "WatsonX Llama 3 70B instruct model for providing detailed responses and guidance."
+  - name: watsonx-llama-3-2-1b-instruct
+    model_id: "meta-llama/llama-3-2-1b-instruct"
+    description: "WatsonX Llama 3 2.1B instruct model for providing detailed responses and guidance."
   - name: watsonx-codellama-34b
-    alias: codellama
+    model_id: "watsonx-codellama-34b"
+    description: "WatsonX CodeLlama 34B model for code-specific reviews."
+  - name: watsonx-mixtral
+    model_id: "watsonx-mixtral"
+    description: "WatsonX Mixtral for various mixed tasks."
+  - name: granite-code-34b
+    model_id: "granite-code-34b"
+    description: "Granite Code 34B model for comprehensive code analysis."
