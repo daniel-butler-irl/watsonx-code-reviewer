@@ -89,7 +89,7 @@ watsonx-code-reviewer/
 ```
 
 - **Root Files**:
-    - `README.md`: Provides project overview, setup instructions, and usage guidelines.
+    - `README.md`: Provides project overview, setup instructions, and usage guideles.
     - `LICENSE`: Contains the licensing information for the project.
 
 - **`requirements.txt`**: Specifies the Python dependencies for the project, including `ruamel.yaml` for configuration file parsing.
