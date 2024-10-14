@@ -88,8 +88,6 @@ watsonx-code-reviewer/
         └── test_logger.py
 ```
 
-### Description of Key Components
-
 - **Root Files**:
     - `README.md`: Provides project overview, setup instructions, and usage guidelines.
     - `LICENSE`: Contains the licensing information for the project.
