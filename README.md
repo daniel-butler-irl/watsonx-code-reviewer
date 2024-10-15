@@ -1,4 +1,4 @@
-# watsonx-code-reviewer
+# watsonx-codfe-reviewer
 
 watsonx-code-reviewer is an AI-powered application designed to review GitHub pull requests (PRs), post automated change requests, and respond to user comments about code. The app leverages multiple agents using IBM WatsonX LLMs to review code not only within the PR but also in the broader context of the entire codebase and dependencies. This app provides continuous learning, building a knowledge database for each repository to speed up future reviews.
 
@@ -25,7 +25,7 @@ watsonx-code-reviewer is an AI-powered application designed to review GitHub pul
 - **IBM Cloud Code Engine**:
     - The app is triggered by webhooks from GitHub and runs on demand in IBM Cloud Code Engine, providing scalable and efficient processing without needing to manage the infrastructure directly.
 
-- **Integration with IBM Cloud Services**:
+- **Integratgion with IBM Cloud Services**:
     - The app prioritizes IBM Cloud services where possible, using **IBM Cloud Databases**, **IBM Cloudant**, **Elasticsearch** for search, and **watsonx.data** for handling vector embeddings.
 
 - **LLM Customization**:
