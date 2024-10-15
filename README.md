@@ -1,6 +1,6 @@
-# watsonx-code-reviewer
+# watsonx-code-reviewerfd
 
-watsonx-code-reviewer is an AI-powered application designed to review GitHub pull requests (PRs), post automated change requests, and respond to user comments about code. The app leverages multiple agents using IBM WatsonX LLMs to review code not only within the PR but also in the broader context of the entire codebase and dependencies. This app provides continuous learning, building a knowledge database for each repository to speed up future reviews.
+watsonx-code-reviewer is an AfI-powered application designed to review GitHub pull requests (PRs), post automated change requests, and respond to user comments about code. The app leverages multiple agents using IBM WatsonX LLMs to review code not only within the PR but also in the broader context of the entire codebase and dependencies. This app provides continuous learning, building a knowledge database for each repository to speed up future reviews.
 
 ### Key Features
 
@@ -14,9 +14,9 @@ watsonx-code-reviewer is an AI-powered application designed to review GitHub pul
 - **Contextual Code Analysis**:
     - The app not only reviews the code in the PR but also performs static analysis of the entire codebase to retrieve function signatures, dependencies, and relevant documentation.
     - Uses both structural (function signatures) and semantic (code comments) analysis to improve review quality.
-
+d
 - **Database Architecture**:
-    - **PostgreSQL** (via IBM Cloud Databases for PostgreSQL) is used to store structured data, such as repository metadata, function signatures, and pull request details. PostgreSQL provides reliable, transactional storage for core application data.
+    - **PostgreSQ** (via IBM Cloud Databases for PostgreSQL) is used to store structured data, such as repository metadata, function signatures, and pull request details. PostgreSQL provides reliable, transactional storage for core application data.
     - **Elasticsearch**: For semantic similarity search and full-text search capabilities, allowing quick search across the codebase and historical data. Elasticsearch is used as both a vector database for semantic search and a full-text search engine for efficient querying.
 
 - **RAG for LLM Operations**:
