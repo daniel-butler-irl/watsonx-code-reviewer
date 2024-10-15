@@ -5,7 +5,7 @@ watsonx-code-reviewer is an AI-powered application designed to review GitHub pul
 ### Key Features
 
 - **Multi-Agent Approach**:
-    - One agent analyzes the code in PRs and suggests changes.
+    - One agent analyzes the code in PRs and suggests changes. mer kr kwpe lds
     - Another agent responds to comments about the code, fetching relevant data from the codebase for accurate replies.
 
 - **Multi-Language Support**:
